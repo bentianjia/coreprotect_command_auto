@@ -5,11 +5,11 @@
 **A lightweight, cross-platform UI generator for Minecraft CoreProtect Commands.**  
 **一款轻量级、跨平台的 Minecraft CoreProtect 指令生成器。**
 
-[![Build PC](https://github.com/USERNAME/REPO_NAME/actions/workflows/build-pc.yml/badge.svg)](https://github.com/USERNAME/REPO_NAME/actions)
-[![Build Android](https://github.com/USERNAME/REPO_NAME/actions/workflows/build-android.yml/badge.svg)](https://github.com/USERNAME/REPO_NAME/actions)
+[![Build PC](https://github.com/bentianjia/coreprotect_command_auto/actions/workflows/build-pc.yml/badge.svg)](https://github.com/bentianjia/coreprotect_command_auto/actions)
+[![Build Android](https://github.com/bentianjia/coreprotect_command_auto/actions/workflows/build-android.yml/badge.svg)](https://github.com/bentianjia/coreprotect_command_auto/actions)
 
-[**👇 立即下载 (Download Now) 👇**](https://github.com/USERNAME/REPO_NAME/actions)  
-*(Please replace USERNAME and REPO_NAME with your GitHub details / 请将链接中的 USERNAME 和 REPO_NAME 替换为您的 GitHub 用户名和仓库名)*
+[**👇 立即下载 (Download Now) 👇**](https://github.com/bentianjia/coreprotect_command_auto/actions)  
+*(自动跳转到最新打包的下载页面)*
 
 </div>
 
@@ -26,8 +26,8 @@
 ## 🚀 Quick Start / 快速开始
 
 ### Download Pre-built Versions / 下载预编译版本
-Navigate to the **[Actions / Releases](https://github.com/USERNAME/REPO_NAME/actions)** tab in this repository to download the latest `.exe` or `.apk` artifacts from the cloud build.  
-请前往本仓库的 **[Actions / Releases](https://github.com/USERNAME/REPO_NAME/actions)** 页面，下载由云端自动生成的最新 `.exe` 或 `.apk` 文件。
+Navigate to the **[Actions / Releases](https://github.com/bentianjia/coreprotect_command_auto/actions)** tab in this repository to download the latest `.exe` or `.apk` artifacts from the cloud build.  
+请前往本仓库的 **[Actions / Releases](https://github.com/bentianjia/coreprotect_command_auto/actions)** 页面，下载由云端自动生成的最新 `.exe` 或 `.apk` 文件。
 
 ### Run Locally (PC) / 本地运行（电脑端）
 ```bash
