@@ -62,3 +62,7 @@ npx cap open android
 
 ## 📄 License / 开源协议
 ISC License
+
+#### ⚠Warning / 警告
+此项目由AI辅助完成
+

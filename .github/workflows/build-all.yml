@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build PC and Android
 
 on:
   push:
@@ -8,9 +8,33 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  build-pc:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Node Dependencies
+        run: npm install
+
+      - name: Build Electron App
+        run: npm run build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload PC Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: CoreProtectGenerator-Windows-Exe
+          path: dist/*.exe
+
+  build-android:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -43,7 +67,7 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: Upload Artifact
+      - name: Upload Android Artifact
         uses: actions/upload-artifact@v3
         with:
           name: CoreProtectGenerator-Android-APK
