@@ -10,6 +10,10 @@ on:
 jobs:
   build-pc:
     runs-on: windows-latest
+    timeout-minutes: 30
+    env:
+      ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
+      ELECTRON_BUILDER_BINARIES_MIRROR: https://npmmirror.com/mirrors/electron-builder-binaries/
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -18,9 +22,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
+          cache: npm
 
       - name: Install Node Dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build Electron App
         run: npm run build
@@ -35,6 +40,7 @@ jobs:
 
   build-android:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -43,6 +49,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
+          cache: npm
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -51,7 +58,7 @@ jobs:
           java-version: '17'
 
       - name: Install Node Dependencies
-        run: npm install
+        run: npm ci
 
       - name: Prepare Web Assets
         run: npm run build:web
