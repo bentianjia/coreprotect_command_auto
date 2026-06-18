@@ -6,6 +6,11 @@ on:
       - main
       - master
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g. 1.0.0)'
+        required: false
+        default: ''
 
 jobs:
   build-pc:
@@ -79,3 +84,46 @@ jobs:
         with:
           name: CoreProtectGenerator-Android-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
+
+  release:
+    needs: [build-pc, build-android]
+    runs-on: ubuntu-latest
+    if: success()
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Release Tag
+        id: tag
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            echo "tag=v${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=nightly-$(date +%Y%m%d)-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Download PC Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: CoreProtectGenerator-Windows-Exe
+          path: artifacts/pc
+
+      - name: Download Android Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: CoreProtectGenerator-Android-APK
+          path: artifacts/android
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: Release ${{ steps.tag.outputs.tag }}
+          files: |
+            artifacts/pc/*.exe
+            artifacts/android/*.apk
+          draft: false
+          prerelease: ${{ github.event.inputs.version == '' }}
+          generate_release_notes: true
