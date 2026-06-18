@@ -19,6 +19,7 @@ jobs:
     env:
       ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
       ELECTRON_BUILDER_BINARIES_MIRROR: https://npmmirror.com/mirrors/electron-builder-binaries/
+      NODE_OPTIONS: --experimental-require-module
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -26,7 +27,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
           cache: npm
 
       - name: Install Node Dependencies
@@ -53,7 +54,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
           cache: npm
 
       - name: Setup Java
