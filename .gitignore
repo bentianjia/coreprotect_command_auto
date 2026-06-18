@@ -1,0 +1,9 @@
+node_modules/
+dist/
+www/
+android/
+.idea/
+.vscode/
+*.log
+*.apk
+*.exe

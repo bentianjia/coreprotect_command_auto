@@ -1,0 +1,31 @@
+{
+  "name": "coreprotect-generator",
+  "version": "1.0.0",
+  "description": "CoreProtect Command Generator",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win --x64",
+    "build:web": "node scripts/build_web.js",
+    "sync:android": "npm run build:web && cap sync android"
+  },
+  "author": "bentianjia",
+  "license": "ISC",
+  "build": {
+    "appId": "com.coreprotect.generator",
+    "win": {
+      "target": "portable"
+    }
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.1.0",
+    "@capacitor/core": "^6.1.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.1.0",
+    "electron": "^42.4.1",
+    "electron-builder": "^26.15.3",
+    "minecraft-data": "^3.110.2"
+  }
+}
+

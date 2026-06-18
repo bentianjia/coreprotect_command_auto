@@ -1,0 +1,6 @@
+{
+  "appId": "com.coreprotect.generator",
+  "appName": "CoreProtect Generator",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}
