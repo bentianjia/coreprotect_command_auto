@@ -11,6 +11,9 @@
 [**👇 立即下载 (Download Now) 👇**](https://github.com/bentianjia/coreprotect_command_auto/actions)  
 *(自动跳转到最新打包的下载页面)*
 
+#### ⚠Warning / 警告
+此项目由AI辅助完成
+
 </div>
 
 ---
@@ -63,6 +66,5 @@ npx cap open android
 ## 📄 License / 开源协议
 ISC License
 
-#### ⚠Warning / 警告
-此项目由AI辅助完成
+
 
