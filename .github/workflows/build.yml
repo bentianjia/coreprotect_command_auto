@@ -56,8 +56,10 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Sync Android
-        run: npm run sync:android
+      - name: Build Web & Add Android Platform
+        run: |
+          npm run build:web
+          npx cap add android
 
       - name: Build APK
         working-directory: ./android
