@@ -143,9 +143,215 @@
             gap: 1.5rem;
         }
 
+        /* ======== Responsive Design - Auto Screen Adaptation ======== */
+
+        /* Tablet & small laptop (≤768px) */
+        @media (max-width: 768px) {
+            body {
+                padding: 2rem 1rem;
+            }
+
+            .header-text h1 {
+                font-size: 1.8rem;
+            }
+
+            .card {
+                padding: 1.8rem;
+            }
+
+            .grid-layout {
+                gap: 1.2rem;
+            }
+        }
+
+        /* Phone landscape & large phone (≤640px) */
         @media (max-width: 640px) {
+            body {
+                padding: 1.5rem 0.75rem;
+                padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+            }
+
+            .container {
+                gap: 1rem;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .header-text h1 {
+                font-size: clamp(1.4rem, 5vw, 1.8rem);
+            }
+
+            .lang-switch {
+                align-self: flex-end;
+            }
+
+            .card {
+                padding: 1.2rem;
+                border-radius: 14px;
+            }
+
+            /* Tabs: horizontal scroll on small screens */
+            .tabs-container {
+                display: flex;
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                margin-bottom: 1.2rem;
+            }
+
+            .tabs-container::-webkit-scrollbar {
+                display: none;
+            }
+
+            .tab-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
             .grid-layout {
                 grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            /* Version selector: stack on mobile */
+            .version-selector {
+                flex-wrap: wrap !important;
+            }
+
+            .version-selector label {
+                width: 100%;
+                margin-bottom: 0.3rem !important;
+            }
+
+            /* Enlarge touch targets */
+            input[type="text"], input[type="number"], select {
+                padding: 0.8rem 0.9rem;
+                font-size: 16px; /* Prevents iOS zoom on focus */
+                min-height: 44px; /* Apple HIG touch target */
+            }
+
+            .tag {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+                min-height: 36px;
+                display: inline-flex;
+                align-items: center;
+            }
+
+            /* Command box: stack vertically */
+            .command-box {
+                flex-direction: column;
+                gap: 0.8rem;
+                align-items: stretch;
+            }
+
+            .command-text {
+                margin-right: 0;
+                font-size: 0.8rem;
+                word-break: break-all;
+                overflow-wrap: anywhere;
+            }
+
+            .copy-btn {
+                align-self: stretch;
+                text-align: center;
+                padding: 0.7rem 1rem;
+                min-height: 44px;
+            }
+
+            /* Input group: allow wrapping */
+            .input-group {
+                flex-wrap: wrap;
+            }
+
+            .input-group > * {
+                min-width: 0;
+            }
+
+            /* Toast: center on mobile */
+            .toast {
+                left: 1rem;
+                right: 1rem;
+                bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+                text-align: center;
+                justify-content: center;
+            }
+
+            /* Search dropdown: full width & better touch */
+            .search-dropdown {
+                max-height: 180px;
+            }
+
+            .dropdown-item {
+                padding: 0.75rem 1rem;
+                min-height: 44px;
+            }
+
+            .selected-item {
+                font-size: 0.75rem;
+            }
+
+            hr {
+                margin: 1.2rem 0;
+            }
+        }
+
+        /* Small phone (≤380px, e.g. iPhone SE, small Android) */
+        @media (max-width: 380px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+
+            .header-text h1 {
+                font-size: 1.2rem;
+            }
+
+            .card {
+                padding: 1rem;
+                border-radius: 12px;
+            }
+
+            .tab-btn {
+                padding: 0.45rem 0.75rem;
+                font-size: 0.75rem;
+            }
+
+            .form-group label {
+                font-size: 0.8rem;
+            }
+
+            .command-text {
+                font-size: 0.72rem;
+            }
+
+            .param-badge {
+                font-size: 0.65rem !important;
+            }
+        }
+
+        /* Very tall phones / notched phones */
+        @supports (padding: env(safe-area-inset-top)) {
+            body {
+                padding-left: max(0.75rem, env(safe-area-inset-left));
+                padding-right: max(0.75rem, env(safe-area-inset-right));
+            }
+        }
+
+        /* Landscape phone */
+        @media (max-height: 500px) and (orientation: landscape) {
+            body {
+                padding: 1rem 2rem;
+            }
+
+            .grid-layout {
+                grid-template-columns: 1fr 1fr;
             }
         }
 
