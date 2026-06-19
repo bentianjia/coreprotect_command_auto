@@ -384,6 +384,20 @@
             color: var(--text-muted);
         }
 
+        .collapsible-group {
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .collapsible-group.show {
+            max-height: 100px;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         .input-group {
             display: flex;
             gap: 0.5rem;
@@ -747,7 +761,7 @@
                 </div>
 
                 <!-- Pagination -->
-                <div class="form-group" id="paginationGroup">
+                <div class="form-group collapsible-group show" id="paginationGroup">
                     <label data-i18n="pagination">分页限制 (页码:行数)</label>
                     <div class="input-group">
                         <input type="number" id="paramPage" min="1" data-i18n-ph="page_ph" placeholder="页码" style="flex: 1;">
@@ -1181,8 +1195,15 @@
                 
                 if (currentCommand === 'lookup') {
                     paginationGroup.style.display = 'flex';
+                    void paginationGroup.offsetWidth; // 触发重绘
+                    paginationGroup.classList.add('show');
                 } else {
-                    paginationGroup.style.display = 'none';
+                    paginationGroup.classList.remove('show');
+                    setTimeout(() => {
+                        if (currentCommand !== 'lookup') {
+                            paginationGroup.style.display = 'none';
+                        }
+                    }, 300);
                 }
                 
                 initHashtags();
