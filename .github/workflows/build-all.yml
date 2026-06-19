@@ -1,0 +1,130 @@
+name: Build PC and Android
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g. 1.0.0)'
+        required: false
+        default: ''
+
+jobs:
+  build-pc:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    env:
+      ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
+      ELECTRON_BUILDER_BINARIES_MIRROR: https://npmmirror.com/mirrors/electron-builder-binaries/
+      NODE_OPTIONS: --experimental-require-module
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Node Dependencies
+        run: npm ci
+
+      - name: Build Electron App
+        run: npm run build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload PC Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CoreProtectGenerator-Windows-Exe
+          path: dist/*.exe
+
+  build-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Install Node Dependencies
+        run: npm ci
+
+      - name: Prepare Web Assets
+        run: npm run build:web
+
+      - name: Initialize Capacitor Android Project
+        run: |
+          npx cap add android || echo "Android platform already added"
+          npx cap sync android
+
+      - name: Build Android APK
+        working-directory: ./android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload Android Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CoreProtectGenerator-Android-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+
+  release:
+    needs: [build-pc, build-android]
+    runs-on: ubuntu-latest
+    if: success()
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Release Tag
+        id: tag
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            echo "tag=v${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=nightly-$(date +%Y%m%d)-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Download PC Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: CoreProtectGenerator-Windows-Exe
+          path: artifacts/pc
+
+      - name: Download Android Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: CoreProtectGenerator-Android-APK
+          path: artifacts/android
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: Release ${{ steps.tag.outputs.tag }}
+          files: |
+            artifacts/pc/*.exe
+            artifacts/android/*.apk
+          draft: false
+          prerelease: ${{ github.event.inputs.version == '' }}
+          generate_release_notes: true
