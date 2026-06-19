@@ -809,6 +809,30 @@
     </div>
 
     <script>
+        function animateHeightChange(element, actionCallback) {
+            if (!element || !element.animate) {
+                actionCallback();
+                return;
+            }
+            const oldHeight = element.getBoundingClientRect().height;
+            actionCallback();
+            const newHeight = element.getBoundingClientRect().height;
+            if (oldHeight !== newHeight) {
+                const oldOverflow = element.style.overflow;
+                element.style.overflow = 'hidden';
+                const animation = element.animate([
+                    { height: oldHeight + 'px' },
+                    { height: newHeight + 'px' }
+                ], {
+                    duration: 300,
+                    easing: 'cubic-bezier(0.25, 0.8, 0.25, 1)'
+                });
+                animation.onfinish = () => {
+                    element.style.overflow = oldOverflow;
+                };
+            }
+        }
+
         // Translations
         const i18nData = {
             zh: {
@@ -1103,39 +1127,41 @@
         }
 
         function renderSelectedItems(set, container, isUser = false) {
-            container.innerHTML = Array.from(set).map(id => {
-                let prefix = '';
-                let cleanId = id;
-                if (!isUser && (cleanId.startsWith('+') || cleanId.startsWith('-'))) {
-                    prefix = cleanId[0];
-                    cleanId = cleanId.substring(1);
-                }
-                let hasHash = false;
-                if (cleanId.startsWith('#')) {
-                    hasHash = true;
-                    cleanId = cleanId.substring(1);
-                }
+            animateHeightChange(container, () => {
+                container.innerHTML = Array.from(set).map(id => {
+                    let prefix = '';
+                    let cleanId = id;
+                    if (!isUser && (cleanId.startsWith('+') || cleanId.startsWith('-'))) {
+                        prefix = cleanId[0];
+                        cleanId = cleanId.substring(1);
+                    }
+                    let hasHash = false;
+                    if (cleanId.startsWith('#')) {
+                        hasHash = true;
+                        cleanId = cleanId.substring(1);
+                    }
+                    
+                    const data = MC_DATA.find(d => d.id === cleanId);
+                    let label = id;
+                    let isInvalid = false;
+                    
+                    if (data) {
+                        const localName = currentLang === 'zh' ? data.zh : data.en;
+                        label = `${prefix}${localName} (${id})`;
+                        let dataVi = data.vi === 1013000 ? 113000 : data.vi;
+                        if (dataVi > currentVersionInt) isInvalid = true;
+                    }
+                    
+                    const invalidStyle = isInvalid ? 'text-decoration: line-through; opacity: 0.5; color: red;' : '';
+                    return `<div class="selected-item" style="${invalidStyle}"><span title="${isInvalid ? '该版本不存在此物品' : ''}">${label}</span><span class="remove" data-id="${id}">×</span></div>`;
+                }).join('');
                 
-                const data = MC_DATA.find(d => d.id === cleanId);
-                let label = id;
-                let isInvalid = false;
-                
-                if (data) {
-                    const localName = currentLang === 'zh' ? data.zh : data.en;
-                    label = `${prefix}${localName} (${id})`;
-                    let dataVi = data.vi === 1013000 ? 113000 : data.vi;
-                    if (dataVi > currentVersionInt) isInvalid = true;
-                }
-                
-                const invalidStyle = isInvalid ? 'text-decoration: line-through; opacity: 0.5; color: red;' : '';
-                return `<div class="selected-item" style="${invalidStyle}"><span title="${isInvalid ? '该版本不存在此物品' : ''}">${label}</span><span class="remove" data-id="${id}">×</span></div>`;
-            }).join('');
-            
-            container.querySelectorAll('.remove').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    set.delete(e.target.dataset.id);
-                    renderSelectedItems(set, container, isUser);
-                    updateCommand();
+                container.querySelectorAll('.remove').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        set.delete(e.target.dataset.id);
+                        renderSelectedItems(set, container, isUser);
+                        updateCommand();
+                    });
                 });
             });
         }
@@ -1261,6 +1287,12 @@
             }
         });
         
+        document.getElementById('paramRadiusType').addEventListener('change', (e) => {
+            const isWorld = e.target.value === 'world';
+            document.getElementById('paramRadiusVal').style.display = isWorld ? 'none' : 'block';
+            document.getElementById('paramRadiusWorld').style.display = isWorld ? 'block' : 'none';
+        });
+        
         document.getElementById('paramUser').addEventListener('input', updateCommand);
         document.getElementById('paramUser').addEventListener('blur', updateCommand);
 
@@ -1308,7 +1340,9 @@
                 if (page || lines) cmd += ` ${page || '1'}:${lines || '5'}`;
             }
 
-            document.getElementById('commandOutput').textContent = cmd;
+            animateHeightChange(document.querySelector('.command-box'), () => {
+                document.getElementById('commandOutput').textContent = cmd;
+            });
         }
 
         document.getElementById('copyBtn').addEventListener('click', () => {
